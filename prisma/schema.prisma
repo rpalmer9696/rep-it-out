@@ -49,13 +49,18 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String       @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?      @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
+    Food          Food[]
+    Exercise      Exercise[]
+    Water         Water[]
+    Sleep         Sleep[]
+    Supplement    Supplement[]
 }
 
 model VerificationToken {
@@ -64,4 +69,59 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Food {
+    id     String   @id @default(cuid())
+    name   String
+    amount Int
+    unit   String
+    userId String
+    user   User     @relation(fields: [userId], references: [id])
+    date   DateTime
+
+    @@unique([name, userId])
+}
+
+model Exercise {
+    id     String   @id @default(cuid())
+    name   String
+    weight Int
+    reps   Int
+    userId String
+    user   User     @relation(fields: [userId], references: [id])
+    date   DateTime
+
+    @@unique([name, userId, date])
+}
+
+model Supplement {
+    id     String   @id @default(cuid())
+    name   String
+    amount Int
+    userId String
+    user   User     @relation(fields: [userId], references: [id])
+    date   DateTime
+
+    @@unique([name, userId, date])
+}
+
+model Water {
+    id     String   @id @default(cuid())
+    amount Int
+    userId String
+    user   User     @relation(fields: [userId], references: [id])
+    date   DateTime
+
+    @@unique([userId, date])
+}
+
+model Sleep {
+    id     String   @id @default(cuid())
+    amount Int
+    userId String
+    user   User     @relation(fields: [userId], references: [id])
+    date   DateTime
+
+    @@unique([userId, date])
 }
