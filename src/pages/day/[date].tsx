@@ -2,7 +2,8 @@ import { signOut, useSession, getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Layout from "../layout";
-import AddFoodModal from "../../components/AddFoodModal";
+import AddFoodModal from "@/components/AddFoodModal";
+import FoodList from "@/components/FoodList";
 import { api } from "@/utils/api";
 import { GetServerSideProps } from "next";
 import type { Food } from "@/types/global";
@@ -60,15 +61,7 @@ const Day = () => {
               Food
             </h2>
             <div className="p-2"></div>
-            {foodCollection.map((food, id) => (
-              <div
-                className="flex flex-row items-center justify-between"
-                key={id}
-              >
-                <p className="text-xl text-white">{food.name}</p>
-                <p className="text-xl text-white">{food.amount}g</p>
-              </div>
-            ))}
+            {!!foodCollection.length && <FoodList foodCollection={foodCollection} />}
             {!!foodCollection.length && <div className="p-2"></div>}
             <button
               className=" w-min whitespace-nowrap rounded bg-white/30 p-2 text-white hover:bg-white/40"
