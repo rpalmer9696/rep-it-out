@@ -1,4 +1,4 @@
-import { GetServerSideProps, type NextPage } from "next";
+import { type GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
 import { signIn, getSession } from "next-auth/react";
 

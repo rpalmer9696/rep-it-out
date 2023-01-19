@@ -79,8 +79,6 @@ model Food {
     userId String
     user   User     @relation(fields: [userId], references: [id])
     date   DateTime
-
-    @@unique([name, userId])
 }
 
 model Exercise {
@@ -91,8 +89,6 @@ model Exercise {
     userId String
     user   User     @relation(fields: [userId], references: [id])
     date   DateTime
-
-    @@unique([name, userId, date])
 }
 
 model Supplement {
@@ -102,8 +98,6 @@ model Supplement {
     userId String
     user   User     @relation(fields: [userId], references: [id])
     date   DateTime
-
-    @@unique([name, userId, date])
 }
 
 model Water {
@@ -113,7 +107,7 @@ model Water {
     user   User     @relation(fields: [userId], references: [id])
     date   DateTime
 
-    @@unique([userId, date])
+    @@unique([date])
 }
 
 model Sleep {
@@ -123,5 +117,5 @@ model Sleep {
     user   User     @relation(fields: [userId], references: [id])
     date   DateTime
 
-    @@unique([userId, date])
+    @@unique([date])
 }

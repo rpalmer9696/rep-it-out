@@ -1,9 +1,14 @@
-import { signOut } from "next-auth/react";
+import { signOut, useSession, getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Layout from "../layout";
+import AddFoodModal from "../../components/AddFoodModal";
+import { api } from "@/utils/api";
+import { GetServerSideProps } from "next";
+import type { Food } from "@/types/global";
 
 const Day = () => {
+  const { data: sessionData } = useSession();
   const router = useRouter();
   const { date } = router.query;
   const today = date ? new Date(date as string) : new Date();
@@ -12,6 +17,17 @@ const Day = () => {
   const year = today.getFullYear();
   const [currentDate, setCurrentDate] = useState<string>(
     `${year}-${month}-${day}`
+  );
+  const [isAddFoodModelOpen, setIsAddFoodModelOpen] = useState<boolean>(false);
+  const [foodCollection, setFoodCollection] = useState<Food[]>([]);
+
+  api.food.getForDate.useQuery(
+    { date: currentDate, email: sessionData?.user?.email as string },
+    {
+      onSuccess: (data) => {
+        setFoodCollection(data);
+      },
+    }
   );
 
   useEffect(() => {
@@ -44,7 +60,20 @@ const Day = () => {
               Food
             </h2>
             <div className="p-2"></div>
-            <button className=" w-min whitespace-nowrap rounded bg-white/30 p-2 text-white hover:bg-white/40">
+            {foodCollection.map((food, id) => (
+              <div
+                className="flex flex-row items-center justify-between"
+                key={id}
+              >
+                <p className="text-xl text-white">{food.name}</p>
+                <p className="text-xl text-white">{food.amount}g</p>
+              </div>
+            ))}
+            {!!foodCollection.length && <div className="p-2"></div>}
+            <button
+              className=" w-min whitespace-nowrap rounded bg-white/30 p-2 text-white hover:bg-white/40"
+              onClick={() => setIsAddFoodModelOpen(true)}
+            >
               + Add Food
             </button>
             <div className="p-4"></div>
@@ -92,8 +121,36 @@ const Day = () => {
           </div>
         </div>
       </div>
+      <AddFoodModal
+        open={isAddFoodModelOpen}
+        onClose={() => setIsAddFoodModelOpen(false)}
+        onSave={(food: Food) => {
+          setIsAddFoodModelOpen(false);
+          setFoodCollection([...foodCollection, food]);
+        }}
+        selectedDate={currentDate}
+      />
     </Layout>
   );
 };
 
 export default Day;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      session,
+    },
+  };
+};
