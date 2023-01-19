@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "@/utils/api";
 import { useSession } from "next-auth/react";
-import { z, ZodError } from "zod";
+import { z, type ZodError } from "zod";
 import type { Food } from "@/types/global";
 
 type Props = {
@@ -81,7 +81,7 @@ const AddFoodModal = ({ open, onClose, onSave, selectedDate }: Props) => {
           onClick={() => {
             try {
               setErrors([]);
-              const food = FoodSchema.parse({ name, amount });
+              FoodSchema.parse({ name, amount });
 
               addFood.mutate(
                 {

@@ -2,11 +2,8 @@ import { signOut, useSession, getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Layout from "../layout";
-import AddFoodModal from "@/components/AddFoodModal";
-import FoodList from "@/components/FoodList";
-import { api } from "@/utils/api";
-import { GetServerSideProps } from "next";
-import type { Food } from "@/types/global";
+import FoodSection from "@/components/FoodSection";
+import { type GetServerSideProps } from "next";
 
 const Day = () => {
   const { data: sessionData } = useSession();
@@ -18,17 +15,6 @@ const Day = () => {
   const year = today.getFullYear();
   const [currentDate, setCurrentDate] = useState<string>(
     `${year}-${month}-${day}`
-  );
-  const [isAddFoodModelOpen, setIsAddFoodModelOpen] = useState<boolean>(false);
-  const [foodCollection, setFoodCollection] = useState<Food[]>([]);
-
-  api.food.getForDate.useQuery(
-    { date: currentDate, email: sessionData?.user?.email as string },
-    {
-      onSuccess: (data) => {
-        setFoodCollection(data);
-      },
-    }
   );
 
   useEffect(() => {
@@ -57,18 +43,10 @@ const Day = () => {
           />
           <div className="p-4"></div>
           <div className="flex flex-col">
-            <h2 className="w-full border-b border-white text-3xl text-white">
-              Food
-            </h2>
-            <div className="p-2"></div>
-            {!!foodCollection.length && <FoodList foodCollection={foodCollection} />}
-            {!!foodCollection.length && <div className="p-2"></div>}
-            <button
-              className=" w-min whitespace-nowrap rounded bg-white/30 p-2 text-white hover:bg-white/40"
-              onClick={() => setIsAddFoodModelOpen(true)}
-            >
-              + Add Food
-            </button>
+            <FoodSection
+              currentDate={currentDate}
+              email={sessionData?.user?.email as string}
+            />
             <div className="p-4"></div>
             <h2 className="w-full border-b border-white text-3xl text-white">
               Workout
@@ -114,15 +92,6 @@ const Day = () => {
           </div>
         </div>
       </div>
-      <AddFoodModal
-        open={isAddFoodModelOpen}
-        onClose={() => setIsAddFoodModelOpen(false)}
-        onSave={(food: Food) => {
-          setIsAddFoodModelOpen(false);
-          setFoodCollection([...foodCollection, food]);
-        }}
-        selectedDate={currentDate}
-      />
     </Layout>
   );
 };
