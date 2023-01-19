@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Layout from "../layout";
 import FoodSection from "@/components/FoodSection";
+import WorkoutSection from "@/components/WorkoutSection";
 import { type GetServerSideProps } from "next";
 
 const Day = () => {
@@ -48,13 +49,10 @@ const Day = () => {
               email={sessionData?.user?.email as string}
             />
             <div className="p-4"></div>
-            <h2 className="w-full border-b border-white text-3xl text-white">
-              Workout
-            </h2>
-            <div className="p-2"></div>
-            <button className=" w-min whitespace-nowrap rounded bg-white/30 p-2 text-white hover:bg-white/40">
-              + Add Exercise
-            </button>
+            <WorkoutSection
+              currentDate={currentDate}
+              email={sessionData?.user?.email as string}
+            />
             <div className="p-4"></div>
             <h2 className="w-full border-b border-white text-3xl text-white">
               Supplements

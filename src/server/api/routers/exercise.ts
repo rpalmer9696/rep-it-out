@@ -5,7 +5,7 @@ import { prisma } from "@/server/db";
 import { TRPCError } from "@trpc/server";
 import { getUser } from "@/utils/helpers";
 
-export const foodRouter = createTRPCRouter({
+export const exerciseRouter = createTRPCRouter({
   getForDate: protectedProcedure
     .input(z.object({ date: z.string(), email: z.string() }))
     .query(async ({ input }) => {
@@ -18,7 +18,7 @@ export const foodRouter = createTRPCRouter({
         });
       }
 
-      return prisma.food.findMany({
+      return prisma.exercise.findMany({
         where: {
           date: new Date(input.date),
           userId: user.id,
@@ -30,7 +30,8 @@ export const foodRouter = createTRPCRouter({
       z.object({
         date: z.string(),
         name: z.string(),
-        amount: z.number(),
+        weight: z.number(),
+        reps: z.number(),
         email: z.string(),
       })
     )
@@ -44,12 +45,12 @@ export const foodRouter = createTRPCRouter({
         });
       }
 
-      return prisma.food.create({
+      return prisma.exercise.create({
         data: {
           date: new Date(input.date),
           name: input.name,
-          amount: input.amount,
-          unit: "g",
+          weight: input.weight,
+          reps: input.reps,
           userId: user.id,
         },
       });

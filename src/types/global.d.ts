@@ -4,3 +4,10 @@ export type Food = {
   amount: number;
   date: Date;
 };
+
+export type Exercise = {
+  id: string;
+  name: string;
+  weight: number;
+  reps: number;
+};
