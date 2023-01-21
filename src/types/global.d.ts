@@ -1,3 +1,10 @@
+export type Exercise = {
+  id: string;
+  name: string;
+  weight: number;
+  reps: number;
+};
+
 export type Food = {
   id: string;
   name: string;
@@ -5,9 +12,9 @@ export type Food = {
   date: Date;
 };
 
-export type Exercise = {
+export type Supplement = {
   id: string;
   name: string;
-  weight: number;
-  reps: number;
+  amount: number;
+  date: Date;
 };

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Layout from "../layout";
 import FoodSection from "@/components/FoodSection";
+import SupplementSection from "@/components/SupplementSection";
 import WorkoutSection from "@/components/WorkoutSection";
 import { type GetServerSideProps } from "next";
 
@@ -17,6 +18,8 @@ const Day = () => {
   const [currentDate, setCurrentDate] = useState<string>(
     `${year}-${month}-${day}`
   );
+
+  const [waterAmount, setWaterAmount] = useState<number>(0);
 
   useEffect(() => {
     setCurrentDate(`${year}-${month}-${day}`);
@@ -54,13 +57,10 @@ const Day = () => {
               email={sessionData?.user?.email as string}
             />
             <div className="p-4"></div>
-            <h2 className="w-full border-b border-white text-3xl text-white">
-              Supplements
-            </h2>
-            <div className="p-2"></div>
-            <button className=" w-min whitespace-nowrap rounded bg-white/30 p-2 text-white hover:bg-white/40">
-              + Add Supplement
-            </button>
+            <SupplementSection
+              currentDate={currentDate}
+              email={sessionData?.user?.email as string}
+            />
             <div className="p-4"></div>
             <div className="flex flex-row items-center justify-between">
               <h2 className=" text-3xl text-white">Water</h2>
