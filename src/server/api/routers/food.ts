@@ -83,4 +83,11 @@ export const foodRouter = createTRPCRouter({
         },
       });
     }),
+  deleteFood: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(({ input }) => prisma.food.delete({ where: { id: input.id } })),
 });

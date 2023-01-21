@@ -8,6 +8,7 @@ type Props = {
   open: boolean;
   onClose: () => void;
   onSave: (food: Food) => void;
+  onDelete: (food: Food) => void;
   food: Food;
 };
 
@@ -18,13 +19,14 @@ const FoodSchema = z.object({
   amount: z.number().min(1, { message: "Amount must be at least 1 gram" }),
 });
 
-const EditFoodModal = ({ open, onClose, onSave, food }: Props) => {
+const EditFoodModal = ({ open, onClose, onSave, onDelete, food }: Props) => {
   const { data: sessionData } = useSession();
   const [isOpen, setIsOpen] = useState<boolean>(open);
   const [name, setName] = useState<string>(food.name);
   const [amount, setAmount] = useState<number>(food.amount);
   const [errors, setErrors] = useState<string[]>([]);
   const editFood = api.food.editFood.useMutation();
+  const deleteFood = api.food.deleteFood.useMutation();
 
   useEffect(() => {
     setIsOpen(open);
@@ -106,6 +108,19 @@ const EditFoodModal = ({ open, onClose, onSave, food }: Props) => {
           Save
         </button>
       </div>
+      <div className="p-4"></div>
+      <button
+        className="rounded bg-red-600 py-2 px-4 text-xl text-white hover:bg-red-600/80"
+        onClick={() => {
+          deleteFood.mutate({ id: food.id });
+          onDelete(food);
+          setIsOpen(false);
+          setErrors([]);
+          onClose();
+        }}
+      >
+        Delete
+      </button>
       <div className="p-4"></div>
     </div>
   );

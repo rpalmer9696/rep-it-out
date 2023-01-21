@@ -34,6 +34,10 @@ const FoodList = ({ foodCollection }: Props) => {
             setIsEditFoodModelOpen(false);
             foodCollection.set(food.id, food);
           }}
+          onDelete={(food: Food) => {
+            setIsEditFoodModelOpen(false);
+            foodCollection.delete(food.id);
+          }}
           food={editFood}
         />
       )}
