@@ -11,13 +11,18 @@ type Props = {
 
 const FoodSection = ({ currentDate, email }: Props) => {
   const [isAddFoodModelOpen, setIsAddFoodModelOpen] = useState<boolean>(false);
-  const [foodCollection, setFoodCollection] = useState<Food[]>([]);
+  const [foodCollection, setFoodCollection] = useState<Map<string, Food>>(
+    new Map()
+  );
 
   api.food.getForDate.useQuery(
     { date: currentDate, email: email },
     {
       onSuccess: (data) => {
-        setFoodCollection(data);
+        const foodCollectionMap = new Map<string, Food>();
+
+        data.forEach((food) => foodCollectionMap.set(food.id, food));
+        setFoodCollection(foodCollectionMap);
       },
     }
   );
@@ -26,8 +31,8 @@ const FoodSection = ({ currentDate, email }: Props) => {
     <>
       <h2 className="w-full border-b border-white text-3xl text-white">Food</h2>
       <div className="p-2"></div>
-      {!!foodCollection.length && <FoodList foodCollection={foodCollection} />}
-      {!!foodCollection.length && <div className="p-2"></div>}
+      {!!foodCollection.size && <FoodList foodCollection={foodCollection} />}
+      {!!foodCollection.size && <div className="p-2"></div>}
       <button
         className=" w-min whitespace-nowrap rounded bg-white/30 p-2 text-white hover:bg-white/40"
         onClick={() => setIsAddFoodModelOpen(true)}
@@ -39,7 +44,8 @@ const FoodSection = ({ currentDate, email }: Props) => {
         onClose={() => setIsAddFoodModelOpen(false)}
         onSave={(food: Food) => {
           setIsAddFoodModelOpen(false);
-          setFoodCollection([...foodCollection, food]);
+          foodCollection.set(food.id, food);
+          setFoodCollection(foodCollection);
         }}
         selectedDate={currentDate}
       />

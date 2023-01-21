@@ -54,4 +54,33 @@ export const foodRouter = createTRPCRouter({
         },
       });
     }),
+  editFood: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        amount: z.number(),
+        email: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const user = await getUser(input.email);
+
+      if (!user) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "User not found",
+        });
+      }
+
+      return prisma.food.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          name: input.name,
+          amount: input.amount,
+        },
+      });
+    }),
 });
