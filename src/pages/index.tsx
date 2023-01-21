@@ -1,6 +1,7 @@
 import { type GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
 import { signIn, getSession } from "next-auth/react";
+import Link from "next/link";
 
 const Home: NextPage = () => {
   return (
@@ -21,6 +22,17 @@ const Home: NextPage = () => {
             <AuthShowcase />
           </div>
         </div>
+        <footer className="flex h-24 w-full flex-col items-center justify-center">
+          <p className="text-white">
+            Made with ❤️ by{" "}
+            <Link
+              href="https://github.com/rpalmer9696"
+              className="text-underline text-blue-200"
+            >
+              @rpalmer9696
+            </Link>
+          </p>
+        </footer>
       </main>
     </>
   );
