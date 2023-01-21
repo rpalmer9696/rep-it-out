@@ -1,7 +1,9 @@
 import { createTRPCRouter } from "./trpc";
 import { exerciseRouter } from "./routers/exercise";
 import { foodRouter } from "./routers/food";
+import { sleepRouter } from "./routers/sleep";
 import { supplementRouter } from "./routers/supplement";
+import { waterRouter } from "./routers/water";
 
 /**
  * This is the primary router for your server.
@@ -11,7 +13,9 @@ import { supplementRouter } from "./routers/supplement";
 export const appRouter = createTRPCRouter({
   exercise: exerciseRouter,
   food: foodRouter,
+  sleep: sleepRouter,
   supplement: supplementRouter,
+  water: waterRouter,
 });
 
 // export type definition of API

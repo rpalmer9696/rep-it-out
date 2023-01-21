@@ -6,6 +6,7 @@ import FoodSection from "@/components/FoodSection";
 import SupplementSection from "@/components/SupplementSection";
 import WorkoutSection from "@/components/WorkoutSection";
 import { type GetServerSideProps } from "next";
+import { api } from "@/utils/api";
 
 const Day = () => {
   const { data: sessionData } = useSession();
@@ -19,11 +20,36 @@ const Day = () => {
     `${year}-${month}-${day}`
   );
 
+  const water = api.water.getForDate.useQuery({
+    date: currentDate,
+    email: sessionData?.user?.email as string,
+  });
+  const sleep = api.sleep.getForDate.useQuery({
+    date: currentDate,
+    email: sessionData?.user?.email as string,
+  });
+
   const [waterAmount, setWaterAmount] = useState<number>(0);
+  const [sleepAmount, setSleepAmount] = useState<number>(0);
+
+  const addWater = api.water.setWaterAmount.useMutation();
+  const addSleep = api.sleep.setSleepAmount.useMutation();
 
   useEffect(() => {
     setCurrentDate(`${year}-${month}-${day}`);
   }, [date]);
+
+  useEffect(() => {
+    if (water.data) {
+      setWaterAmount(water.data.amount);
+    }
+  }, [water.data]);
+
+  useEffect(() => {
+    if (sleep.data) {
+      setSleepAmount(sleep.data.amount);
+    }
+  }, [sleep.data]);
 
   return (
     <Layout>
@@ -68,6 +94,8 @@ const Day = () => {
                 <input
                   type="number"
                   className="w-24 rounded border border-white p-2 text-right text-xl"
+                  value={waterAmount}
+                  onChange={(e) => void setWaterAmount(Number(e.target.value))}
                 />
                 <p className="text-2xl text-white">ml</p>
               </div>
@@ -79,12 +107,28 @@ const Day = () => {
                 <input
                   type="number"
                   className="w-24 rounded border border-white p-2 text-right text-xl"
+                  value={sleepAmount}
+                  onChange={(e) => void setSleepAmount(Number(e.target.value))}
                 />
                 <p className="text-2xl text-white">hours</p>
               </div>
             </div>
             <div className="p-8"></div>
-            <button className="self-end rounded bg-green-400/60 py-2 px-6 text-2xl text-white hover:bg-green-400/80">
+            <button
+              className="self-end rounded bg-green-400/60 py-2 px-6 text-2xl text-white hover:bg-green-400/80"
+              onClick={() => {
+                addWater.mutate({
+                  email: sessionData?.user?.email as string,
+                  date: currentDate,
+                  amount: waterAmount,
+                });
+                addSleep.mutate({
+                  email: sessionData?.user?.email as string,
+                  date: currentDate,
+                  amount: sleepAmount,
+                });
+              }}
+            >
               Save
             </button>
           </div>
