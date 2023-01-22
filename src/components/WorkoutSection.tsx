@@ -12,13 +12,20 @@ type Props = {
 const WorkoutSection = ({ currentDate, email }: Props) => {
   const [isAddExerciseModelOpen, setIsAddExerciseModelOpen] =
     useState<boolean>(false);
-  const [exerciseCollection, setExerciseCollection] = useState<Exercise[]>([]);
+  const [exerciseCollection, setExerciseCollection] = useState<
+    Map<string, Exercise>
+  >(new Map());
 
   api.exercise.getForDate.useQuery(
     { date: currentDate, email: email },
     {
       onSuccess: (data) => {
-        setExerciseCollection(data);
+        const exerciseCollectionMap = new Map<string, Exercise>();
+
+        data.forEach((exercise) =>
+          exerciseCollectionMap.set(exercise.id, exercise)
+        );
+        setExerciseCollection(exerciseCollectionMap);
       },
     }
   );
@@ -29,10 +36,10 @@ const WorkoutSection = ({ currentDate, email }: Props) => {
         Workout
       </h2>
       <div className="p-2"></div>
-      {!!exerciseCollection.length && (
+      {!!exerciseCollection.size && (
         <ExerciseList exerciseCollection={exerciseCollection} />
       )}
-      {!!exerciseCollection.length && <div className="p-2"></div>}
+      {!!exerciseCollection.size && <div className="p-2"></div>}
       <button
         className=" w-min whitespace-nowrap rounded bg-white/30 p-2 text-white hover:bg-white/40"
         onClick={() => setIsAddExerciseModelOpen(true)}
@@ -44,7 +51,8 @@ const WorkoutSection = ({ currentDate, email }: Props) => {
         onClose={() => setIsAddExerciseModelOpen(false)}
         onSave={(exercise: Exercise) => {
           setIsAddExerciseModelOpen(false);
-          setExerciseCollection([...exerciseCollection, exercise]);
+          exerciseCollection.set(exercise.id, exercise);
+          setExerciseCollection(exerciseCollection);
         }}
         selectedDate={currentDate}
       />

@@ -55,4 +55,44 @@ export const exerciseRouter = createTRPCRouter({
         },
       });
     }),
+  editExercise: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        reps: z.number(),
+        weight: z.number(),
+        email: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const user = await getUser(input.email);
+
+      if (!user) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "User not found",
+        });
+      }
+
+      return prisma.exercise.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          name: input.name,
+          reps: input.reps,
+          weight: input.weight,
+        },
+      });
+    }),
+  deleteExercise: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(({ input }) =>
+      prisma.exercise.delete({ where: { id: input.id } })
+    ),
 });
